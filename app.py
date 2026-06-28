@@ -216,6 +216,29 @@ if current_user != "-- Select your name --":
                 if col2.button("Remove My Tent", type="primary"):
                     remove_tent(current_user)
                     st.rerun()
+                    
+    # --- CONFIRMATION MESSAGE IF USER ALREADY HAS AN ASSIGNMENT ---
+    if user_tent != "":
+        st.divider()
+
+        if user_tent == "HELP":
+            st.warning(
+                "You are currently listed under **Help Me Find a Spot**. "
+                "You have not been assigned to a tent yet."
+            )
+
+        elif user_tent in tents_df["Owner"].values:
+            assigned_tent = tents_df[tents_df["Owner"] == user_tent].iloc[0]
+
+            st.success(
+                f"You are currently assigned to **{user_tent}'s {assigned_tent['Type']}**."
+            )
+
+        else:
+            st.info(
+                f"You are currently assigned to **{user_tent}**, "
+                "but that tent is no longer listed. You may want to update your selection."
+            )
 
     # --- TENT SELECTION BOARD ---
     if user_status in ["guest", "needs_help", "owner"]:
