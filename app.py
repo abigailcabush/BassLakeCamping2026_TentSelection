@@ -401,7 +401,7 @@ if current_user != "--":
                         for guest in guests:
                             st.write(guest)
                     else:
-                        st.write("None yet")
+                        st.write("None")
 
                 with col3:
                     if user_tent == owner:
