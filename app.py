@@ -134,7 +134,7 @@ st.markdown(
 user_list = ["--"] + users_df["Name"].tolist()
 
 current_user = st.selectbox(
-    "Select Your Name:?",
+    "Select Your Name:",
     user_list,
     filter_mode=None
 )
@@ -337,7 +337,7 @@ if current_user != "-- Select your name --":
 
         if user_status != "owner" or tent_exists:
             st.divider()
-            st.subheader("🏕️ Tent Selection Board")
+            st.subheader("Current Availible Tents to Sign Up for:")
 
             for index, tent in tents_df.iterrows():
                 owner = tent["Owner"]
