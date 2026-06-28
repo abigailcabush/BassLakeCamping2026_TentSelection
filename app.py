@@ -299,22 +299,23 @@ if current_user != "-- Select your name --":
                 col1, col2, col3 = st.columns([2, 3, 1])
 
                 with col1:
-                    selected_label = " [SELECTED]" if user_tent == owner else ""
-                    st.markdown(f"**{owner}'s {tent['Type']}{selected_label}**")
-
+                    st.markdown(f"**{owner}'s {tent['Type']}**")
+                
                 with col2:
                     st.write(f"Guests: {guests_str}")
-
+                
                 with col3:
+                    if user_tent == owner:
+                        st.info("[SELECTED]")
+                
                     if avail > 0:
                         st.success(f"{avail} spaces left")
-
+                
                         if user_status != "owner" and user_tent != owner:
                             if st.button("Join", key=f"join_{owner}"):
                                 assign_guest(current_user, owner)
                     else:
                         st.error("FULL")
-
                 st.write("---")
 
             # The HELP bucket
@@ -326,13 +327,15 @@ if current_user != "-- Select your name --":
             col1, col2, col3 = st.columns([2, 3, 1])
 
             with col1:
-                help_selected_label = " [SELECTED]" if user_tent == "HELP" else ""
-                st.markdown(f"**Unassigned / Need Help{help_selected_label}**")
-
+                st.markdown("**Unassigned / Need Help**")
+            
             with col2:
                 st.write(f"People: {help_str}")
-
+            
             with col3:
+                if user_tent == "HELP":
+                    st.info("[SELECTED]")
+            
                 if user_status != "owner" and user_tent != "HELP":
                     if st.button("Join", key="join_help"):
                         assign_guest(current_user, "HELP")
