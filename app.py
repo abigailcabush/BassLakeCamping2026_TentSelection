@@ -447,7 +447,7 @@ if current_user != "--":
 
             col1, col2, col3 = st.columns([2, 2.75, 1.25])
 
-          with col1:
+            with col1:
                 st.markdown(
                     """
                     <div style="
