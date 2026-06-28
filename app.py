@@ -181,41 +181,69 @@ if current_user != "-- Select your name --":
             )
 
             with st.expander("Edit My Tent"):
-                new_cap = st.number_input(
-                    "Update capacity:",
-                    min_value=0,
-                    max_value=5,
-                    value=int(my_tent["Capacity"])
+                st.markdown(
+                    """
+                    <style>
+                    div[data-testid="stButton"] button[kind="secondary"] {
+                        background-color: #1f4d3a;
+                        color: white;
+                        border: none;
+                    }
+
+                    div[data-testid="stButton"] button[kind="secondary"]:hover {
+                        background-color: #173b2c;
+                        color: white;
+                        border: none;
+                    }
+                    </style>
+                    """,
+                    unsafe_allow_html=True
                 )
 
-                col1, col2 = st.columns(2)
+                cap_col, update_col = st.columns([2, 1])
 
-                if col1.button("Update Capacity"):
-                    updated_users = users_df.copy()
-                    updated_tents = tents_df.copy()
+                with cap_col:
+                    new_cap = st.number_input(
+                        "Update capacity:",
+                        min_value=0,
+                        max_value=5,
+                        value=int(my_tent["Capacity"])
+                    )
 
-                    # If capacity reduced below current guest count, boot extras
-                    if new_cap < len(my_guests):
-                        diff = len(my_guests) - new_cap
-                        reset_guests = my_guests[-diff:]
+                with update_col:
+                    st.markdown("<br>", unsafe_allow_html=True)
 
-                        updated_users.loc[
-                            updated_users["Name"].isin(reset_guests),
-                            ["Status", "Assigned_Tent"]
-                        ] = ["", ""]
+                    if st.button("Update Capacity", key="update_capacity_btn"):
+                        updated_users = users_df.copy()
+                        updated_tents = tents_df.copy()
 
-                        st.toast(
-                            f"Updated! {len(reset_guests)} guest(s) were reset and will need to make a new selection."
-                        )
-                    updated_tents.loc[
-                        updated_tents["Owner"] == current_user,
-                        "Capacity"
-                    ] = new_cap
+                        # If capacity reduced below current guest count, reset extras
+                        if new_cap < len(my_guests):
+                            diff = len(my_guests) - new_cap
+                            reset_guests = my_guests[-diff:]
 
-                    save_users_and_tents(updated_users, updated_tents)
-                    st.rerun()
+                            updated_users.loc[
+                                updated_users["Name"].isin(reset_guests),
+                                ["Status", "Assigned_Tent"]
+                            ] = ["", ""]
 
-                if col2.button("Remove My Tent", type="primary"):
+                            st.toast(
+                                f"Updated! {len(reset_guests)} guest(s) were reset and will need to make a new selection."
+                            )
+
+                        updated_tents.loc[
+                            updated_tents["Owner"] == current_user,
+                            "Capacity"
+                        ] = new_cap
+
+                        save_users_and_tents(updated_users, updated_tents)
+                        st.rerun()
+
+                st.divider()
+
+                st.caption("Removing your tent will reset you and anyone assigned to your tent.")
+
+                if st.button("Remove My Tent", type="primary", key="remove_tent_btn"):
                     remove_tent(current_user)
                     st.rerun()
                     
