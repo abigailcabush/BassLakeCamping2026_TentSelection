@@ -112,12 +112,68 @@ if st.sidebar.button("Refresh assignments"):
 # --- 3. MAIN UI ---
 st.title("🏕️ Camping Tent Assignments")
 
+st.markdown(
+    """
+    <style>
+    div[data-testid="stButton"] button[kind="secondary"] {
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #999999 !important;
+    }
+
+    div[data-testid="stButton"] button[kind="secondary"]:hover {
+        background-color: #f2f2f2 !important;
+        color: black !important;
+        border: 1px solid #666666 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 user_list = ["-- Select your name --"] + users_df["Name"].tolist()
+
 current_user = st.selectbox(
     "Who are you?",
     user_list,
     filter_mode=None
 )
+
+reset_col1, reset_col2 = st.columns([2, 1])
+
+with reset_col1:
+    st.empty()
+
+with reset_col2:
+    reset_clicked = st.button(
+        "Reset all my selections",
+        type="secondary",
+        key="top_reset_all_my_selections"
+    )
+
+if reset_clicked and current_user != "-- Select your name --":
+    updated_users = users_df.copy()
+    updated_tents = tents_df.copy()
+
+    updated_users.loc[
+        updated_users["Name"] == current_user,
+        ["Status", "Assigned_Tent"]
+    ] = ["", ""]
+
+    # If they were a tent owner, delete their tent and reset guests
+    if current_user in updated_tents["Owner"].values:
+        updated_users.loc[
+            updated_users["Assigned_Tent"] == current_user,
+            ["Status", "Assigned_Tent"]
+        ] = ["", ""]
+
+        updated_tents = updated_tents[updated_tents["Owner"] != current_user]
+
+        save_users_and_tents(updated_users, updated_tents)
+    else:
+        save_users(updated_users)
+
+    st.rerun()
 
 if current_user != "-- Select your name --":
     st.divider()
@@ -349,29 +405,4 @@ if current_user != "-- Select your name --":
                     if st.button("Join", key="join_help"):
                         assign_guest(current_user, "HELP")
 
-    # Emergency Reset Button
-    if st.button("Reset My Choice", type="secondary"):
-        updated_users = users_df.copy()
-        updated_tents = tents_df.copy()
-
-        updated_users.loc[
-            updated_users["Name"] == current_user,
-            ["Status", "Assigned_Tent"]
-        ] = ["", ""]
-
-        # If they were a tent owner, delete their tent and reset guests
-        if current_user in updated_tents["Owner"].values:
-            # Reset everyone assigned to this user's tent
-            updated_users.loc[
-                updated_users["Assigned_Tent"] == current_user,
-                ["Status", "Assigned_Tent"]
-            ] = ["", ""]
-
-            # Remove this user's tent
-            updated_tents = updated_tents[updated_tents["Owner"] != current_user]
-
-            save_users_and_tents(updated_users, updated_tents)
-        else:
-            save_users(updated_users)
-
-        st.rerun()
+ 
