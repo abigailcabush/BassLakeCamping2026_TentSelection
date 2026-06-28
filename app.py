@@ -418,7 +418,7 @@ if current_user != "--":
                 with col2:
                     st.markdown(
                         """
-                        <div style="padding-left: 0.75rem;">
+                        <div style="padding-left: 1rem;">
                             <strong>Guests:</strong>
                         </div>
                         """,
@@ -429,7 +429,7 @@ if current_user != "--":
                         for guest in guests:
                             st.markdown(
                                 f"""
-                                <div style="padding-left: 1.25rem;">
+                                <div style="padding-left: 1.75rem;">
                                     {guest}
                                 </div>
                                 """,
@@ -438,7 +438,7 @@ if current_user != "--":
                     else:
                         st.markdown(
                             """
-                            <div style="padding-left: 1.25rem;">
+                            <div style="padding-left: 1.75rem;">
                                 None
                             </div>
                             """,
@@ -453,7 +453,7 @@ if current_user != "--":
                         space_word = "space" if avail == 1 else "spaces"
                 
                         st.markdown(
-                            '<div style="padding-left: 0.4rem;">',
+                            '<div style="padding-left: 1rem;">',
                             unsafe_allow_html=True
                         )
                         st.success(f"{avail} {space_word} left")
@@ -464,7 +464,7 @@ if current_user != "--":
                                 assign_guest(current_user, owner)
                     else:
                         st.markdown(
-                            '<div style="padding-left: 0.4rem;">',
+                            '<div style="padding-left: 1rem;">',
                             unsafe_allow_html=True
                         )
                         st.error("FULL")
@@ -498,7 +498,7 @@ if current_user != "--":
             with col2:
                 st.markdown(
                     """
-                    <div style="padding-left: 0.75rem;">
+                    <div style="padding-left: 1rem;">
                         <strong>People:</strong>
                     </div>
                     """,
@@ -509,7 +509,7 @@ if current_user != "--":
                     for guest in help_guests:
                         st.markdown(
                             f"""
-                            <div style="padding-left: 1.25rem;">
+                            <div style="padding-left: 1.75rem;">
                                 {guest}
                             </div>
                             """,
@@ -518,7 +518,7 @@ if current_user != "--":
                 else:
                     st.markdown(
                         """
-                        <div style="padding-left: 1.25rem;">
+                        <div style="padding-left: 1.75rem;">
                             No one currently!
                         </div>
                         """,
