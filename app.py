@@ -227,20 +227,20 @@ if current_user != "--":
             index=None
         )
 
-        if choice:
-            if choice.startswith("1"):
+                if choice:
+            if choice == "I have my own tent / sleeping arrangement":
                 users_df.loc[
                     users_df["Name"] == current_user,
                     "Status"
                 ] = "owner"
 
-            elif choice.startswith("2"):
+            elif choice == "I plan to sleep in a friend's tent":
                 users_df.loc[
                     users_df["Name"] == current_user,
                     "Status"
                 ] = "guest"
 
-            elif choice.startswith("3"):
+            elif choice == "I need help finding somewhere to sleep":
                 users_df.loc[
                     users_df["Name"] == current_user,
                     "Status"
