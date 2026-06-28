@@ -456,7 +456,7 @@ if current_user != "--":
                         text-decoration: underline;
                         margin-bottom: 0.25rem;
                     ">
-                        Help Me Find a Spot
+                        Unassigned
                     </div>
                     """,
                     unsafe_allow_html=True
