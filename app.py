@@ -416,27 +416,59 @@ if current_user != "--":
                     )
 
                 with col2:
-                    st.markdown("**Guests:**")
-
+                    st.markdown(
+                        """
+                        <div style="padding-left: 0.75rem;">
+                            <strong>Guests:</strong>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+                
                     if guests:
                         for guest in guests:
-                            st.write(guest)
+                            st.markdown(
+                                f"""
+                                <div style="padding-left: 1.25rem;">
+                                    {guest}
+                                </div>
+                                """,
+                                unsafe_allow_html=True
+                            )
                     else:
-                        st.write("None")
+                        st.markdown(
+                            """
+                            <div style="padding-left: 1.25rem;">
+                                None
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
 
                 with col3:
                     if user_tent == owner:
                         st.info("[SELECTED]")
-
+                
                     if avail > 0:
                         space_word = "space" if avail == 1 else "spaces"
+                
+                        st.markdown(
+                            '<div style="padding-left: 0.4rem;">',
+                            unsafe_allow_html=True
+                        )
                         st.success(f"{avail} {space_word} left")
-
+                        st.markdown("</div>", unsafe_allow_html=True)
+                
                         if user_status != "owner" and user_tent != owner:
                             if st.button("Join", key=f"join_{owner}"):
                                 assign_guest(current_user, owner)
                     else:
+                        st.markdown(
+                            '<div style="padding-left: 0.4rem;">',
+                            unsafe_allow_html=True
+                        )
                         st.error("FULL")
+                        st.markdown("</div>", unsafe_allow_html=True)
 
                 st.write("---")
 
@@ -464,12 +496,34 @@ if current_user != "--":
                
 
             with col2:
-
+                st.markdown(
+                    """
+                    <div style="padding-left: 0.75rem;">
+                        <strong>People:</strong>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+            
                 if help_guests:
                     for guest in help_guests:
-                        st.write(guest)
+                        st.markdown(
+                            f"""
+                            <div style="padding-left: 1.25rem;">
+                                {guest}
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
                 else:
-                    st.write("No one currently!")
+                    st.markdown(
+                        """
+                        <div style="padding-left: 1.25rem;">
+                            No one currently!
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
 
             with col3:
                 if user_tent == "HELP":
