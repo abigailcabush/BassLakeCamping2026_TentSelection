@@ -294,15 +294,19 @@ if current_user != "-- Select your name --":
                 guests = get_guests(owner)
                 avail = capacity - len(guests)
 
-                guests_str = ", ".join(guests) if guests else "None yet"
-
                 col1, col2, col3 = st.columns([2, 2.75, 1.25])
 
                 with col1:
                     st.markdown(f"**{owner}'s {tent['Type']}**")
                 
                 with col2:
-                    st.write(f"Guests: {guests_str}")
+                    st.markdown("**Guests:**")
+                
+                    if guests:
+                        for guest in guests:
+                            st.write(guest)
+                    else:
+                        st.write("None yet")
                 
                 with col3:
                     if user_tent == owner:
@@ -322,15 +326,20 @@ if current_user != "-- Select your name --":
             st.subheader("🆘 Help Me Find a Spot!")
 
             help_guests = get_guests("HELP")
-            help_str = ", ".join(help_guests) if help_guests else "No one currently!"
 
-            col1, col2, col3 = st.columns([2, 3, 1])
+            col1, col2, col3 = st.columns([2, 2.75, 1.25])
 
             with col1:
                 st.markdown("**Unassigned / Need Help**")
             
             with col2:
-                st.write(f"People: {help_str}")
+                st.markdown("**People:**")
+            
+                if help_guests:
+                    for guest in help_guests:
+                        st.write(guest)
+                else:
+                    st.write("No one currently!")
             
             with col3:
                 if user_tent == "HELP":
