@@ -77,19 +77,22 @@ def save_tent(owner, shelter_type, capacity):
 
 def remove_tent(owner):
     """
-    One Users update + one Tents update.
-    Your original version wrote to Users twice and Tents once.
+    Remove a tent and fully reset everyone who was assigned to it.
+
+    This makes affected users look like they never made a selection:
+    Status = ""
+    Assigned_Tent = ""
     """
     updated_users = users_df.copy()
     updated_tents = tents_df.copy()
 
-    # Move guests in this tent to HELP
+    # Reset all guests assigned to this tent
     updated_users.loc[
         updated_users["Assigned_Tent"] == owner,
-        "Assigned_Tent"
-    ] = "HELP"
+        ["Status", "Assigned_Tent"]
+    ] = ["", ""]
 
-    # Reset owner status
+    # Reset the tent owner too
     updated_users.loc[
         updated_users["Name"] == owner,
         ["Status", "Assigned_Tent"]
@@ -193,18 +196,17 @@ if current_user != "-- Select your name --":
 
                     # If capacity reduced below current guest count, boot extras
                     if new_cap < len(my_guests):
-                        diff = len(my_guests) - new_cap
-                        booted = my_guests[-diff:]
+                    diff = len(my_guests) - new_cap
+                    reset_guests = my_guests[-diff:]
 
-                        updated_users.loc[
-                            updated_users["Name"].isin(booted),
-                            "Assigned_Tent"
-                        ] = "HELP"
+                    updated_users.loc[
+                        updated_users["Name"].isin(reset_guests),
+                        ["Status", "Assigned_Tent"]
+                    ] = ["", ""]
 
-                        st.toast(
-                            f"Updated! {len(booted)} guest(s) were moved to the help pool."
-                        )
-
+    st.toast(
+        f"Updated! {len(reset_guests)} guest(s) were reset and will need to make a new selection."
+    )
                     updated_tents.loc[
                         updated_tents["Owner"] == current_user,
                         "Capacity"
@@ -315,14 +317,16 @@ if current_user != "-- Select your name --":
 
         # If they were a tent owner, delete their tent and move guests to HELP
         if current_user in updated_tents["Owner"].values:
-            updated_users.loc[
-                updated_users["Assigned_Tent"] == current_user,
-                "Assigned_Tent"
-            ] = "HELP"
+    # Reset everyone assigned to this user's tent
+    updated_users.loc[
+        updated_users["Assigned_Tent"] == current_user,
+        ["Status", "Assigned_Tent"]
+    ] = ["", ""]
 
-            updated_tents = updated_tents[updated_tents["Owner"] != current_user]
+    # Remove this user's tent
+    updated_tents = updated_tents[updated_tents["Owner"] != current_user]
 
-            save_users_and_tents(updated_users, updated_tents)
+    save_users_and_tents(updated_users, updated_tents)
         else:
             save_users(updated_users)
 
