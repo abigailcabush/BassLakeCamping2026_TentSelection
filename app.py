@@ -113,7 +113,11 @@ if st.sidebar.button("Refresh assignments"):
 st.title("🏕️ Camping Tent Assignments")
 
 user_list = ["-- Select your name --"] + users_df["Name"].tolist()
-current_user = st.selectbox("Who are you?", user_list)
+current_user = st.selectbox(
+    "Who are you?",
+    user_list,
+    filter_mode=None
+)
 
 if current_user != "-- Select your name --":
     st.divider()
