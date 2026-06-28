@@ -296,7 +296,7 @@ if current_user != "-- Select your name --":
 
                 guests_str = ", ".join(guests) if guests else "None yet"
 
-                col1, col2, col3 = st.columns([2, 3, 1])
+                col1, col2, col3 = st.columns([2, 2, 2])
 
                 with col1:
                     st.markdown(f"**{owner}'s {tent['Type']}**")
