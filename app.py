@@ -388,7 +388,7 @@ if current_user != "--":
         if user_status != "owner" or tent_exists:
             st.divider()
             st.markdown(
-                "<h3 style='font-size: 1.15rem;'>Sign Up for an Availible Tent:</h3>",
+                "<h3 style='font-size: 1.25rem;'>Sign Up for an Availible Tent:</h3>",
                 unsafe_allow_html=True
             )
 
