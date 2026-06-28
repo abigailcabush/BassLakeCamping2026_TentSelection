@@ -227,31 +227,32 @@ if current_user != "--":
             index=None
         )
 
-                if choice == "I have my own tent / sleeping arrangement":
-                    users_df.loc[
-                        users_df["Name"] == current_user,
-                        "Status"
-                    ] = "owner"
-    
-                elif choice == "I plan to sleep in a friend's tent":
-                    users_df.loc[
-                        users_df["Name"] == current_user,
-                        "Status"
-                    ] = "guest"
-    
-                elif choice == "I need help finding somewhere to sleep":
-                    users_df.loc[
-                        users_df["Name"] == current_user,
-                        "Status"
-                    ] = "needs_help"
-    
-                    users_df.loc[
-                        users_df["Name"] == current_user,
-                        "Assigned_Tent"
-                    ] = "HELP"
-    
-                save_users(users_df)
-                st.rerun()
+        if choice:
+            if choice == "I have my own tent / sleeping arrangement":
+                users_df.loc[
+                    users_df["Name"] == current_user,
+                    "Status"
+                ] = "owner"
+
+            elif choice == "I plan to sleep in a friend's tent":
+                users_df.loc[
+                    users_df["Name"] == current_user,
+                    "Status"
+                ] = "guest"
+
+            elif choice == "I need help finding somewhere to sleep":
+                users_df.loc[
+                    users_df["Name"] == current_user,
+                    "Status"
+                ] = "needs_help"
+
+                users_df.loc[
+                    users_df["Name"] == current_user,
+                    "Assigned_Tent"
+                ] = "HELP"
+
+            save_users(users_df)
+            st.rerun()
 
     # --- IF USER IS A TENT OWNER ---
     elif user_status == "owner":
