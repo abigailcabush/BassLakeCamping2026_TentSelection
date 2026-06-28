@@ -154,7 +154,7 @@ if current_user != "-- Select your name --":
             save_users(users_df)
             st.rerun()
 
-    # --- IF USER IS A TENT OWNER ---
+        # --- IF USER IS A TENT OWNER ---
     elif user_status == "owner":
         st.subheader("Your Sleeping Arrangement")
 
@@ -250,7 +250,7 @@ if current_user != "-- Select your name --":
                 if st.button("Remove My Tent", type="primary", key="remove_tent_btn"):
                     remove_tent(current_user)
                     st.rerun()
-                    
+
     # --- CONFIRMATION MESSAGE IF USER ALREADY HAS AN ASSIGNMENT ---
     if user_tent != "":
         st.divider()
@@ -298,7 +298,7 @@ if current_user != "-- Select your name --":
 
                 col1, col2, col3 = st.columns([2, 3, 1])
 
-               with col1:
+                with col1:
                     selected_label = " [SELECTED]" if user_tent == owner else ""
                     st.markdown(f"**{owner}'s {tent['Type']}{selected_label}**")
 
@@ -347,7 +347,7 @@ if current_user != "-- Select your name --":
             ["Status", "Assigned_Tent"]
         ] = ["", ""]
 
-        # If they were a tent owner, delete their tent and move guests to HELP
+        # If they were a tent owner, delete their tent and reset guests
         if current_user in updated_tents["Owner"].values:
             # Reset everyone assigned to this user's tent
             updated_users.loc[
@@ -357,7 +357,7 @@ if current_user != "-- Select your name --":
 
             # Remove this user's tent
             updated_tents = updated_tents[updated_tents["Owner"] != current_user]
-        
+
             save_users_and_tents(updated_users, updated_tents)
         else:
             save_users(updated_users)
