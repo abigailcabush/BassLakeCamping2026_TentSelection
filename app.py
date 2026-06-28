@@ -196,17 +196,17 @@ if current_user != "-- Select your name --":
 
                     # If capacity reduced below current guest count, boot extras
                     if new_cap < len(my_guests):
-                    diff = len(my_guests) - new_cap
-                    reset_guests = my_guests[-diff:]
+                        diff = len(my_guests) - new_cap
+                        reset_guests = my_guests[-diff:]
 
-                    updated_users.loc[
-                        updated_users["Name"].isin(reset_guests),
-                        ["Status", "Assigned_Tent"]
-                    ] = ["", ""]
+                        updated_users.loc[
+                            updated_users["Name"].isin(reset_guests),
+                            ["Status", "Assigned_Tent"]
+                        ] = ["", ""]
 
-    st.toast(
-        f"Updated! {len(reset_guests)} guest(s) were reset and will need to make a new selection."
-    )
+                        st.toast(
+                            f"Updated! {len(reset_guests)} guest(s) were reset and will need to make a new selection."
+                        )
                     updated_tents.loc[
                         updated_tents["Owner"] == current_user,
                         "Capacity"
@@ -317,16 +317,16 @@ if current_user != "-- Select your name --":
 
         # If they were a tent owner, delete their tent and move guests to HELP
         if current_user in updated_tents["Owner"].values:
-    # Reset everyone assigned to this user's tent
-    updated_users.loc[
-        updated_users["Assigned_Tent"] == current_user,
-        ["Status", "Assigned_Tent"]
-    ] = ["", ""]
+            # Reset everyone assigned to this user's tent
+            updated_users.loc[
+                updated_users["Assigned_Tent"] == current_user,
+                ["Status", "Assigned_Tent"]
+            ] = ["", ""]
 
-    # Remove this user's tent
-    updated_tents = updated_tents[updated_tents["Owner"] != current_user]
-
-    save_users_and_tents(updated_users, updated_tents)
+            # Remove this user's tent
+            updated_tents = updated_tents[updated_tents["Owner"] != current_user]
+        
+            save_users_and_tents(updated_users, updated_tents)
         else:
             save_users(updated_users)
 
