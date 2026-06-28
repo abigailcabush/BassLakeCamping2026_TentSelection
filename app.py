@@ -250,7 +250,7 @@ if current_user != "--":
 
     # --- IF USER IS A TENT OWNER ---
     elif user_status == "owner":
-        st.subheader("Your Sleeping Arrangement")
+        st.subheader("Your Current Selection:")
 
         tent_exists = current_user in tents_df["Owner"].values
 
