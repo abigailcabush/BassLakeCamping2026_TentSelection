@@ -421,7 +421,6 @@ if current_user != "--":
                 st.markdown("**Unassigned**")
 
             with col2:
-                st.markdown("**People:**")
 
                 if help_guests:
                     for guest in help_guests:
