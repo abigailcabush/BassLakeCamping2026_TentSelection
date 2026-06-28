@@ -226,7 +226,7 @@ if current_user != "-- Select your name --":
                 value=0
             )
 
-            if st.button("Save My Tent"):
+            if st.button("Save"):
                 save_tent(current_user, shelter_type, capacity)
                 st.success("Saved! You can view the assignments below.")
                 st.rerun()
