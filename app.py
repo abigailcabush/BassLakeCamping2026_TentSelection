@@ -343,35 +343,36 @@ if current_user != "--":
                     st.rerun()
 
    # --- CONFIRMATION / STATUS MESSAGE ---
-        if user_status == "guest" and user_tent == "":
-            st.divider()
+   # --- CONFIRMATION / STATUS MESSAGE ---
+    if user_status == "guest" and user_tent == "":
+        st.divider()
+        st.warning(
+            "Please select an open spot in your friend's tent. "
+            "If you do not see your friend's tent, they must visit this link "
+            "and indicate that they would like to host a tent."
+        )
+
+    elif user_tent != "":
+        st.divider()
+
+        if user_tent == "HELP":
             st.warning(
-                "Please select an open spot in your friend's tent. "
-                "If you do not see your friend's tent, they must visit this link "
-                "and indicate that they would like to host a tent."
+                "You are currently listed under **Help Me Find a Spot**. "
+                "You have not been assigned to a tent yet."
             )
-        
-        elif user_tent != "":
-            st.divider()
-        
-            if user_tent == "HELP":
-                st.warning(
-                    "You are currently listed under **Help Me Find a Spot**. "
-                    "You have not been assigned to a tent yet."
-                )
-        
-            elif user_tent in tents_df["Owner"].values:
-                assigned_tent = tents_df[tents_df["Owner"] == user_tent].iloc[0]
-        
-                st.success(
-                    f"You are currently assigned to **{user_tent}'s {assigned_tent['Type']}**."
-                )
-        
-            else:
-                st.info(
-                    f"You are currently assigned to **{user_tent}**, "
-                    "but that tent is no longer listed. You may want to update your selection."
-                )
+
+        elif user_tent in tents_df["Owner"].values:
+            assigned_tent = tents_df[tents_df["Owner"] == user_tent].iloc[0]
+
+            st.success(
+                f"You are currently assigned to **{user_tent}'s {assigned_tent['Type']}**."
+            )
+
+        else:
+            st.info(
+                f"You are currently assigned to **{user_tent}**, "
+                "but that tent is no longer listed. You may want to update your selection."
+            )
 
     # --- TENT SELECTION BOARD ---
     if user_status in ["guest", "needs_help", "owner"]:
