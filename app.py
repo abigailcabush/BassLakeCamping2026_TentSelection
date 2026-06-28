@@ -339,11 +339,6 @@ if current_user != "-- Select your name --":
             st.divider()
             st.subheader("🏕️ Tent Selection Board")
 
-            if user_status == "owner":
-                st.caption(
-                    "You are a tent owner. You can view assignments but cannot join other tents."
-                )
-
             for index, tent in tents_df.iterrows():
                 owner = tent["Owner"]
                 capacity = int(tent["Capacity"])
