@@ -136,7 +136,10 @@ if st.sidebar.button("Refresh assignments"):
 
 
 # --- 3. MAIN UI ---
-st.title("Bass Lake Tents! 🏕️")
+st.markdown(
+    "<h1 style='font-size: 2rem;'>Bass Lake Tents! 🏕️</h1>",
+    unsafe_allow_html=True
+)
 
 # Button styling
 st.markdown(
@@ -209,7 +212,10 @@ if current_user != "--":
 
     # --- IF NO SELECTION MADE YET ---
     if user_status == "":
-        st.subheader(f"Hi, {current_user}! What is your plan?")
+        st.markdown(
+            f"<h3 style='font-size: 1.25rem;'>Hi, {current_user}! What is your plan?</h3>",
+            unsafe_allow_html=True
+        )
 
         choice = st.radio(
             "Select an option:",
