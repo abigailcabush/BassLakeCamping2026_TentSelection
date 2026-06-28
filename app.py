@@ -348,7 +348,7 @@ if current_user != "--":
         st.divider()
         st.warning(
             "Please select an open spot in your friend's tent. "
-            "If you do not see your friend's tent, they must visit this link "
+            "If you do not see your friend's tent, they must first visit this link "
             "and indicate that they would like to host a tent."
         )
 
