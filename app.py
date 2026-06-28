@@ -298,8 +298,9 @@ if current_user != "-- Select your name --":
 
                 col1, col2, col3 = st.columns([2, 3, 1])
 
-                with col1:
-                    st.markdown(f"**{owner}'s {tent['Type']}**")
+               with col1:
+                    selected_label = " [SELECTED]" if user_tent == owner else ""
+                    st.markdown(f"**{owner}'s {tent['Type']}{selected_label}**")
 
                 with col2:
                     st.write(f"Guests: {guests_str}")
@@ -325,14 +326,13 @@ if current_user != "-- Select your name --":
             col1, col2, col3 = st.columns([2, 3, 1])
 
             with col1:
-                st.markdown("**Unassigned / Need Help**")
+                help_selected_label = " [SELECTED]" if user_tent == "HELP" else ""
+                st.markdown(f"**Unassigned / Need Help{help_selected_label}**")
 
             with col2:
                 st.write(f"People: {help_str}")
 
             with col3:
-                st.info("Unlimited spaces")
-
                 if user_status != "owner" and user_tent != "HELP":
                     if st.button("Join", key="join_help"):
                         assign_guest(current_user, "HELP")
