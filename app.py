@@ -131,10 +131,10 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-user_list = ["-- Select your name --"] + users_df["Name"].tolist()
+user_list = ["--"] + users_df["Name"].tolist()
 
 current_user = st.selectbox(
-    "Who are you?",
+    "Select Your Name:?",
     user_list,
     filter_mode=None
 )
