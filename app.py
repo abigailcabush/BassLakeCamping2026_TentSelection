@@ -110,7 +110,7 @@ if st.sidebar.button("Refresh assignments"):
     st.rerun()
 
 # --- 3. MAIN UI ---
-st.title("🏕️ Camping Tent Assignments")
+st.title("Bass Lake Tents! 🏕️")
 
 st.markdown(
     """
