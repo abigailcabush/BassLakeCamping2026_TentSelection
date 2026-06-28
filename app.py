@@ -411,14 +411,14 @@ if current_user != "--":
                 st.write("---")
 
             # --- HELP BUCKET ---
-            st.subheader("🆘 Help Me Find a Spot!")
+            st.subheader("Help Me Find a Spot!")
 
             help_guests = get_guests("HELP")
 
             col1, col2, col3 = st.columns([2, 2.75, 1.25])
 
             with col1:
-                st.markdown("**Unassigned / Need Help**")
+                st.markdown("**Unassigned**")
 
             with col2:
                 st.markdown("**People:**")
