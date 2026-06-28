@@ -1,3 +1,5 @@
+
+ 
 import streamlit as st
 import pandas as pd
 from streamlit_gsheets import GSheetsConnection
@@ -14,13 +16,6 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 
 @st.cache_data(ttl=CACHE_SECONDS)
 def load_data():
-    """
-    Cached Google Sheets read.
-
-    Important:
-    - conn.read(..., ttl=0) keeps the GSheetsConnection itself from caching stale data.
-    - @st.cache_data controls the app-level cache instead.
-    """
     users = conn.read(worksheet="Users", ttl=0).fillna("")
     tents = conn.read(worksheet="Tents", ttl=0).fillna("")
 
@@ -50,6 +45,7 @@ def save_users_and_tents(users, tents):
 
 
 users_df, tents_df = load_data()
+
 
 # --- 2. HELPER FUNCTIONS ---
 def get_guests(owner_name):
@@ -104,57 +100,16 @@ def remove_tent(owner):
     save_users_and_tents(updated_users, updated_tents)
 
 
-# Optional manual refresh without forcing every rerun to hit Google Sheets
-if st.sidebar.button("Refresh assignments"):
-    load_data.clear()
-    st.rerun()
-
-# --- 3. MAIN UI ---
-st.title("Bass Lake Tents! 🏕️")
-
-st.markdown(
+def reset_user_selections(current_user):
     """
-    <style>
-    div[data-testid="stButton"] button[kind="secondary"] {
-        background-color: white !important;
-        color: black !important;
-        border: 1px solid #999999 !important;
-    }
+    Reset this user's selections.
 
-    div[data-testid="stButton"] button[kind="secondary"]:hover {
-        background-color: #f2f2f2 !important;
-        color: black !important;
-        border: 1px solid #666666 !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-user_list = ["--"] + users_df["Name"].tolist()
-
-current_user = st.selectbox(
-    "Select Your Name:",
-    user_list,
-    filter_mode=None
-)
-
-reset_col1, reset_col2 = st.columns([2, 1])
-
-with reset_col1:
-    st.empty()
-
-with reset_col2:
-    reset_clicked = st.button(
-        "Reset all my selections",
-        type="secondary",
-        key="top_reset_all_my_selections"
-    )
-
-if reset_clicked and current_user != "-- Select your name --":
+    If the user owns a tent, remove the tent and reset everyone assigned to it.
+    """
     updated_users = users_df.copy()
     updated_tents = tents_df.copy()
 
+    # Reset the current user
     updated_users.loc[
         updated_users["Name"] == current_user,
         ["Status", "Assigned_Tent"]
@@ -173,9 +128,79 @@ if reset_clicked and current_user != "-- Select your name --":
     else:
         save_users(updated_users)
 
+
+# Optional manual refresh without forcing every rerun to hit Google Sheets
+if st.sidebar.button("Refresh assignments"):
+    load_data.clear()
     st.rerun()
 
-if current_user != "-- Select your name --":
+
+# --- 3. MAIN UI ---
+st.title("Bass Lake Tents! 🏕️")
+
+# Button styling
+st.markdown(
+    """
+    <style>
+    /* Reset button: white with black text */
+    .st-key-top_reset_all_my_selections button {
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #999999 !important;
+    }
+
+    .st-key-top_reset_all_my_selections button:hover {
+        background-color: #f2f2f2 !important;
+        color: black !important;
+        border: 1px solid #666666 !important;
+    }
+
+    /* Update Capacity button: navy green with white text */
+    .st-key-update_capacity_btn button {
+        background-color: #1f4d3a !important;
+        color: white !important;
+        border: none !important;
+    }
+
+    .st-key-update_capacity_btn button:hover {
+        background-color: #173b2c !important;
+        color: white !important;
+        border: none !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# --- NAME SELECTION ---
+user_list = ["--"] + users_df["Name"].tolist()
+
+current_user = st.selectbox(
+    "Select Your Name:",
+    user_list,
+    filter_mode=None
+)
+
+# Reset button directly below name selector, pushed right
+reset_col1, reset_col2 = st.columns([2, 1])
+
+with reset_col1:
+    st.empty()
+
+with reset_col2:
+    reset_clicked = st.button(
+        "Reset all my selections",
+        type="secondary",
+        key="top_reset_all_my_selections"
+    )
+
+if reset_clicked and current_user != "--":
+    reset_user_selections(current_user)
+    st.rerun()
+
+
+# --- MAIN APP BODY ---
+if current_user != "--":
     st.divider()
 
     user_row = users_df[users_df["Name"] == current_user].iloc[0]
@@ -198,26 +223,42 @@ if current_user != "-- Select your name --":
 
         if choice:
             if choice.startswith("1"):
-                users_df.loc[users_df["Name"] == current_user, "Status"] = "owner"
+                users_df.loc[
+                    users_df["Name"] == current_user,
+                    "Status"
+                ] = "owner"
 
             elif choice.startswith("2"):
-                users_df.loc[users_df["Name"] == current_user, "Status"] = "guest"
+                users_df.loc[
+                    users_df["Name"] == current_user,
+                    "Status"
+                ] = "guest"
 
             elif choice.startswith("3"):
-                users_df.loc[users_df["Name"] == current_user, "Status"] = "needs_help"
-                users_df.loc[users_df["Name"] == current_user, "Assigned_Tent"] = "HELP"
+                users_df.loc[
+                    users_df["Name"] == current_user,
+                    "Status"
+                ] = "needs_help"
+
+                users_df.loc[
+                    users_df["Name"] == current_user,
+                    "Assigned_Tent"
+                ] = "HELP"
 
             save_users(users_df)
             st.rerun()
 
-        # --- IF USER IS A TENT OWNER ---
+    # --- IF USER IS A TENT OWNER ---
     elif user_status == "owner":
         st.subheader("Your Sleeping Arrangement")
 
         tent_exists = current_user in tents_df["Owner"].values
 
         if not tent_exists:
-            shelter_type = st.radio("What are you sleeping in?", ["Tent", "Car"])
+            shelter_type = st.radio(
+                "What are you sleeping in?",
+                ["Tent", "Car"]
+            )
 
             capacity = st.number_input(
                 "I have space for __ additional people to join me:",
@@ -235,31 +276,15 @@ if current_user != "-- Select your name --":
             my_tent = tents_df[tents_df["Owner"] == current_user].iloc[0]
             my_guests = get_guests(current_user)
 
+            capacity_display = int(my_tent["Capacity"])
+            guest_word = "guest" if capacity_display == 1 else "guests"
+
             st.info(
                 f"You are hosting in your {my_tent['Type']} "
-                f"with space for {int(my_tent['Capacity'])} guest(s)."
+                f"with space for {capacity_display} {guest_word}."
             )
 
             with st.expander("Edit My Tent"):
-                st.markdown(
-                    """
-                    <style>
-                    div[data-testid="stButton"] button[kind="secondary"] {
-                        background-color: #1f4d3a;
-                        color: white;
-                        border: none;
-                    }
-
-                    div[data-testid="stButton"] button[kind="secondary"]:hover {
-                        background-color: #173b2c;
-                        color: white;
-                        border: none;
-                    }
-                    </style>
-                    """,
-                    unsafe_allow_html=True
-                )
-
                 cap_col, update_col = st.columns([2, 1])
 
                 with cap_col:
@@ -273,7 +298,11 @@ if current_user != "-- Select your name --":
                 with update_col:
                     st.markdown("<br>", unsafe_allow_html=True)
 
-                    if st.button("Update Capacity", key="update_capacity_btn"):
+                    if st.button(
+                        "Update Capacity",
+                        type="secondary",
+                        key="update_capacity_btn"
+                    ):
                         updated_users = users_df.copy()
                         updated_tents = tents_df.copy()
 
@@ -301,9 +330,15 @@ if current_user != "-- Select your name --":
 
                 st.divider()
 
-                st.caption("Removing your tent will reset anyone assigned to your tent.")
+                st.caption(
+                    "Removing your tent will reset anyone assigned to your tent."
+                )
 
-                if st.button("Remove My Tent", type="primary", key="remove_tent_btn"):
+                if st.button(
+                    "Remove My Tent",
+                    type="primary",
+                    key="remove_tent_btn"
+                ):
                     remove_tent(current_user)
                     st.rerun()
 
@@ -332,12 +367,12 @@ if current_user != "-- Select your name --":
 
     # --- TENT SELECTION BOARD ---
     if user_status in ["guest", "needs_help", "owner"]:
-
         tent_exists = current_user in tents_df["Owner"].values
 
+        # Only show board for owners after they have created their tent
         if user_status != "owner" or tent_exists:
             st.divider()
-            st.subheader("Current Availible Tents to Sign Up for:")
+            st.subheader("Current Available Tents to Sign Up for:")
 
             for index, tent in tents_df.iterrows():
                 owner = tent["Owner"]
@@ -349,31 +384,33 @@ if current_user != "-- Select your name --":
 
                 with col1:
                     st.markdown(f"**{owner}'s {tent['Type']}**")
-                
+
                 with col2:
                     st.markdown("**Guests:**")
-                
+
                     if guests:
                         for guest in guests:
                             st.write(guest)
                     else:
                         st.write("None yet")
-                
+
                 with col3:
                     if user_tent == owner:
                         st.info("[SELECTED]")
-                
+
                     if avail > 0:
-                        st.success(f"{avail} spaces left")
-                
+                        space_word = "space" if avail == 1 else "spaces"
+                        st.success(f"{avail} {space_word} left")
+
                         if user_status != "owner" and user_tent != owner:
                             if st.button("Join", key=f"join_{owner}"):
                                 assign_guest(current_user, owner)
                     else:
                         st.error("FULL")
+
                 st.write("---")
 
-            # The HELP bucket
+            # --- HELP BUCKET ---
             st.subheader("🆘 Help Me Find a Spot!")
 
             help_guests = get_guests("HELP")
@@ -382,22 +419,20 @@ if current_user != "-- Select your name --":
 
             with col1:
                 st.markdown("**Unassigned / Need Help**")
-            
+
             with col2:
                 st.markdown("**People:**")
-            
+
                 if help_guests:
                     for guest in help_guests:
                         st.write(guest)
                 else:
                     st.write("No one currently!")
-            
+
             with col3:
                 if user_tent == "HELP":
                     st.info("[SELECTED]")
-            
+
                 if user_status != "owner" and user_tent != "HELP":
                     if st.button("Join", key="join_help"):
                         assign_guest(current_user, "HELP")
-
- 
