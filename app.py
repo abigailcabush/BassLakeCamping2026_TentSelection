@@ -241,7 +241,7 @@ if current_user != "-- Select your name --":
 
                 st.divider()
 
-                st.caption("Removing your tent will reset you and anyone assigned to your tent.")
+                st.caption("Removing your tent will reset anyone assigned to your tent.")
 
                 if st.button("Remove My Tent", type="primary", key="remove_tent_btn"):
                     remove_tent(current_user)
