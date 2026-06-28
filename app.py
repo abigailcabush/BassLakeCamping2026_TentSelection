@@ -220,9 +220,9 @@ if current_user != "--":
         choice = st.radio(
             "Select an option:",
             [
-                "1) I have my own tent / sleeping arrangement",
-                "2) I plan to sleep in a friend's tent",
-                "3) I need help finding somewhere to sleep"
+                "I have my own tent / sleeping arrangement",
+                "I plan to sleep in a friend's tent",
+                "I need help finding somewhere to sleep"
             ],
             index=None
         )
