@@ -237,7 +237,7 @@ if current_user != "-- Select your name --":
 
             st.info(
                 f"You are hosting in your {my_tent['Type']} "
-                f"with space for {my_tent['Capacity']} guests."
+                f"with space for {int(my_tent['Capacity'])} guests."
             )
 
             with st.expander("Edit My Tent"):
