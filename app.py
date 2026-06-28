@@ -387,7 +387,10 @@ if current_user != "--":
         # Only show board for owners after they have created their tent
         if user_status != "owner" or tent_exists:
             st.divider()
-            st.subheader("Current Available Tents to Sign Up for:")
+            st.markdown(
+                "<h3 style='font-size: 1.15rem;'>Current Available Tents to Sign Up for:</h3>",
+                unsafe_allow_html=True
+            )
 
             for index, tent in tents_df.iterrows():
                 owner = tent["Owner"]
@@ -398,7 +401,19 @@ if current_user != "--":
                 col1, col2, col3 = st.columns([2, 2.75, 1.25])
 
                 with col1:
-                    st.markdown(f"**{owner}'s {tent['Type']}**")
+                    st.markdown(
+                        f"""
+                        <div style="
+                            font-size: 1.15rem;
+                            font-weight: 700;
+                            text-decoration: underline;
+                            margin-bottom: 0.25rem;
+                        ">
+                            {index + 1}) {owner}'s {tent['Type']}
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
 
                 with col2:
                     st.markdown("**Guests:**")
@@ -432,8 +447,21 @@ if current_user != "--":
 
             col1, col2, col3 = st.columns([2, 2.75, 1.25])
 
-            with col1:
-                st.markdown("**Unassigned**")
+          with col1:
+                st.markdown(
+                    """
+                    <div style="
+                        font-size: 1.15rem;
+                        font-weight: 700;
+                        text-decoration: underline;
+                        margin-bottom: 0.25rem;
+                    ">
+                        Help Me Find a Spot
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+               
 
             with col2:
 
