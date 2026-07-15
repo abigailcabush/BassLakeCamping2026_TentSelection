@@ -178,11 +178,28 @@ st.markdown(
 # --- NAME SELECTION ---
 user_list = ["--"] + users_df["Name"].tolist()
 
-current_user = st.selectbox(
-    "Select Your Name:",
-    user_list,
-    filter_mode=None
-)
+# 1. Initialize session state to track the user's name
+if "current_user" not in st.session_state:
+    st.session_state.current_user = "--"
+
+st.write("**Select Your Name:**")
+
+# 2. Use a popover (dropdown button) that spans the width of the container
+with st.popover(f"👤 {st.session_state.current_user}", use_container_width=True):
+    # 3. Inside the popover, use a radio button list (no keyboard triggered!)
+    new_user = st.radio(
+        "Select Name",
+        options=user_list,
+        index=user_list.index(st.session_state.current_user),
+        label_visibility="collapsed"
+    )
+    
+    # 4. If they pick a new name, update state and rerun to close the popover
+    if new_user != st.session_state.current_user:
+        st.session_state.current_user = new_user
+        st.rerun()
+
+current_user = st.session_state.current_user
 
 # Reset button directly below name selector, pushed right
 reset_col1, reset_col2 = st.columns([2, 1])
@@ -197,10 +214,12 @@ with reset_col2:
         key="top_reset_all_my_selections"
     )
 
+# Use the state variable for your reset check
 if reset_clicked and current_user != "--":
     reset_user_selections(current_user)
+    # Reset the dropdown back to default as well
+    st.session_state.current_user = "--"
     st.rerun()
-
 
 # --- MAIN APP BODY ---
 if current_user != "--":
