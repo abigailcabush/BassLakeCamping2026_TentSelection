@@ -178,26 +178,32 @@ st.markdown(
 # --- NAME SELECTION ---
 user_list = ["--"] + users_df["Name"].tolist()
 
-# 1. Initialize session state to track the user's name
+# 1. Initialize session state
 if "current_user" not in st.session_state:
     st.session_state.current_user = "--"
 
-st.write("**Select Your Name:**")
-
-# 2. Use a popover (dropdown button) that spans the width of the container
-with st.popover(f"{st.session_state.current_user}", use_container_width=True):
-    # 3. Inside the popover, use a radio button list (no keyboard triggered!)
-    new_user = st.radio(
-        "Select Name",
+# 2. Define the modal dialog
+@st.dialog("👤 Select Your Name")
+def open_name_selector():
+    # Radio buttons inside the modal (no keyboard trigger!)
+    selected_name = st.radio(
+        "Choose:",
         options=user_list,
         index=user_list.index(st.session_state.current_user),
         label_visibility="collapsed"
     )
     
-    # 4. If they pick a new name, update state and rerun to close the popover
-    if new_user != st.session_state.current_user:
-        st.session_state.current_user = new_user
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # 3. Confirm button closes the modal instantly via rerun
+    if st.button("Confirm", type="primary", use_container_width=True):
+        st.session_state.current_user = selected_name
         st.rerun()
+
+# 4. The main screen button that opens the dialog
+st.write("**Select Your Name:**")
+if st.button(f"👤 {st.session_state.current_user}", use_container_width=True):
+    open_name_selector()
 
 current_user = st.session_state.current_user
 
@@ -214,10 +220,8 @@ with reset_col2:
         key="top_reset_all_my_selections"
     )
 
-# Use the state variable for your reset check
 if reset_clicked and current_user != "--":
     reset_user_selections(current_user)
-    # Reset the dropdown back to default as well
     st.session_state.current_user = "--"
     st.rerun()
 
