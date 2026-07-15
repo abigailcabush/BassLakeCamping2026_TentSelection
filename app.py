@@ -185,7 +185,7 @@ if "current_user" not in st.session_state:
 st.write("**Select Your Name:**")
 
 # 2. Use a popover (dropdown button) that spans the width of the container
-with st.popover(f"👤 {st.session_state.current_user}", use_container_width=True):
+with st.popover(f" {st.session_state.current_user}", use_container_width=True):
     # 3. Inside the popover, use a radio button list (no keyboard triggered!)
     new_user = st.radio(
         "Select Name",
