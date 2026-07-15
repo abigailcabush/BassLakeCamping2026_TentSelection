@@ -178,36 +178,11 @@ st.markdown(
 # --- NAME SELECTION ---
 user_list = ["--"] + users_df["Name"].tolist()
 
-# 1. Initialize session state
-if "current_user" not in st.session_state:
-    st.session_state.current_user = "--"
-
-# 2. Define the modal dialog with a 2-column grid
-@st.dialog("👤 Select Your Name")
-def open_name_selector():
-    # Create two columns
-    col1, col2 = st.columns(2)
-    
-    # Loop through the names and place them alternately in col1 and col2
-    for i, name in enumerate(user_list):
-        # Pick the column based on odd/even index
-        target_col = col1 if i % 2 == 0 else col2
-        
-        # Make the currently selected name stand out
-        btn_type = "primary" if name == st.session_state.current_user else "secondary"
-        
-        with target_col:
-            # When tapped, update the state and immediately rerun to close
-            if st.button(name, type=btn_type, use_container_width=True, key=f"btn_user_{i}"):
-                st.session_state.current_user = name
-                st.rerun()
-
-# 3. The main screen button that opens the dialog
-st.write("**Select Your Name:**")
-if st.button(f"👤 {st.session_state.current_user}", use_container_width=True):
-    open_name_selector()
-
-current_user = st.session_state.current_user
+current_user = st.selectbox(
+    "Select Your Name:",
+    user_list,
+    filter_mode=None
+)
 
 # Reset button directly below name selector, pushed right
 reset_col1, reset_col2 = st.columns([2, 1])
@@ -224,7 +199,6 @@ with reset_col2:
 
 if reset_clicked and current_user != "--":
     reset_user_selections(current_user)
-    st.session_state.current_user = "--"
     st.rerun()
 
 # --- MAIN APP BODY ---
